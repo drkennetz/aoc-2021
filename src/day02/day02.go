@@ -12,7 +12,7 @@ import (
 func main() {
 	inputS, inputI := FileReaderDay2("../../inputs/day02/day02.txt")
 	fmt.Println(Part1(inputS, inputI))
-	//fmt.Println(Part2(input))
+	fmt.Println(Part2(inputS, inputI))
 }
 
 func Part1(strings []string, nums []int) int {
