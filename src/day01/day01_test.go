@@ -15,6 +15,13 @@ func TestPart1(t *testing.T) {
 	}
 }
 
+func TestPart1Refactor(t *testing.T) {
+	result := 7
+	actual := Part1Refactor(input)
+	if actual != result {
+		log.Fatalln("FAIL")
+	}
+}
 func TestPart2(t *testing.T) {
 	result := 5
 	actual := Part2(input)
@@ -22,12 +29,25 @@ func TestPart2(t *testing.T) {
 		log.Fatalln("FAIL! expected 5 got ", actual)
 	}
 }
-
+func TestPart2Refactor(t *testing.T) {
+	result := 5
+	actual := Part2Refactor(input)
+	if actual != result {
+		log.Fatalln("FAIL! expected 5 got ", actual)
+	}
+}
 var benchInput = FileReaderDay1("../../inputs/day01/day01.txt")
+
 
 func BenchmarkPart1(b *testing.B) {
 	for n :=0; n < b.N; n++ {
 		Part1(benchInput)
+	}
+}
+
+func BenchmarkPart1Refactor(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Part1Refactor(benchInput)
 	}
 }
 
@@ -37,3 +57,8 @@ func BenchmarkPart2(b *testing.B) {
 	}
 }
 
+func BenchmarkPart2Refactor(b *testing.B) {
+	for n := 0; n <b.N; n++ {
+		Part2Refactor(benchInput)
+	}
+}

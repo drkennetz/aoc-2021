@@ -13,6 +13,7 @@ func main() {
 	input := FileReaderDay1("../../inputs/day01/day01.txt")
 	fmt.Println(Part1(input))
 	fmt.Println(Part2(input))
+	fmt.Println(Part2Refactor(input))
 }
 
 // Part1 checks to see if next value is greater than current value and returns the count of those increases
@@ -30,6 +31,13 @@ func Part1(intslice []int) int {
 	return increasing
 }
 
+func Part1Refactor(intslice []int) int {
+	increasing := 0
+	for i:=1; i < len(intslice); i++ {
+		if intslice[i] > intslice[i-1] {increasing++}
+	}
+	return increasing
+}
 
 // Part2 checks to see if sliding windows of 3 are less than next sliding windows of 3
 func Part2(intslice []int) int {
@@ -45,6 +53,14 @@ func Part2(intslice []int) int {
 	return increasing
 }
 
+func Part2Refactor(intslice []int) int{
+	increasing := 0
+	for i := 3; i < len(intslice); i++ {
+		curr, prev := intslice[i], intslice[i-3]
+		if curr > prev {increasing++}
+	}
+	return increasing
+}
 // helper func
 func miniSum(intslice []int) int {
 	res := 0
