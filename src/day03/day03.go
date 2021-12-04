@@ -9,26 +9,23 @@ import (
 	"strings"
 )
 
-func main() {
-	input, binaries := FileReaderDay3("../../inputs/day03/day03.txt")
 
-	fmt.Println(Part1(input))
+func main() {
+	binaries := FileReaderDay3("../../inputs/day03/day03.txt")
+	fmt.Println(Part1(binaries))
 	fmt.Println(Part2(binaries))
 }
 
-func Part1(m map[int][]string) int64 {
-	epsilonSlice, gammaSlice := findMostCommonByPosition(m)
-	gamma := strings.Join(gammaSlice, "")
-	epsilon := strings.Join(epsilonSlice, "")
+func Part1(binaries []string) int64 {
+	epsilon, gamma := findMostCommonByPosition(binaries)
 	gammaInt, _ := strconv.ParseInt(gamma, 2, 64)
 	epsilonInt, _ := strconv.ParseInt(epsilon, 2, 64)
 	return gammaInt * epsilonInt
 }
 
 func Part2(s []string) int64 {
-
-	co2String := filterScrubs("less", s, 0)[0]
-	o2String := filterScrubs("more", s, 0)[0]
+	co2String := filterScrubs("co2", s, 0)[0]
+	o2String := filterScrubs("o2", s, 0)[0]
 	co2Int, _ := strconv.ParseInt(co2String, 2, 64)
 	o2Int, _ := strconv.ParseInt(o2String, 2, 64)
 	return co2Int * o2Int
@@ -49,20 +46,19 @@ func filterScrubs(comp string, b []string, index int) []string {
 		}
 	}
 	search := ""
-	if comp == "more" {
+	if comp == "o2" {
 		if ones >= zeros {
 			search = "1"
 		} else {
 			search = "0"
 		}
-	} else if comp == "less" {
+	} else if comp == "co2" {
 		if ones < zeros {
 			search = "1"
 		} else {
 			search = "0"
 		}
 	}
-
 	for _, binary := range b {
 		if string(binary[index]) == search {
 			tmpSlice = append(tmpSlice, binary)
@@ -72,35 +68,32 @@ func filterScrubs(comp string, b []string, index int) []string {
 	return filterScrubs(comp, tmpSlice, index+1)
 }
 
-func findMostCommonByPosition(m map[int][]string) ([]string, []string) {
-	epsilonSlice := make([]string, len(m))
-	gammaSlice := make([]string, len(m))
-	for index, digits := range m {
-		ones := 0
-		zeros := 0
-		for _, v := range digits {
-			if v == "1" {
-				ones++
+// gamma is the most common bit across each index
+// epsilon is the least common
+func findMostCommonByPosition(binaries []string) (string, string) {
+	var gamma, epsilon string
+	for i:=0; i < len(binaries[0]); i++ {
+		var zeroes, ones int
+		for _, binary := range binaries {
+			if binary[i] == '0' {
+				zeroes++
 			} else {
-				zeros++
+				ones++
 			}
 		}
-		if ones > zeros {
-			epsilonSlice[index] = "0"
-			gammaSlice[index] = "1"
-		} else if zeros > ones {
-			epsilonSlice[index] = "1"
-			gammaSlice[index] = "0"
+		if zeroes > ones {
+			gamma += "0"
+			epsilon += "1"
 		} else {
-			epsilonSlice[index] = "1"
-			gammaSlice[index] = "1"
+			gamma += "1"
+			epsilon += "0"
 		}
 	}
-	return epsilonSlice, gammaSlice
+
+	return epsilon, gamma
 }
 
-func FileReaderDay3(s string) (map[int][]string, []string) {
-	output := make(map[int][]string)
+func FileReaderDay3(s string) []string {
 	var binaries []string
 	file, err := os.Open(s)
 	if err != nil {
@@ -111,12 +104,9 @@ func FileReaderDay3(s string) (map[int][]string, []string) {
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		binaries = append(binaries, line)
-		for i, v := range line {
-			output[i] = append(output[i], string(v))
-		}
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatalln(err)
 	}
-	return output, binaries
+	return binaries
 }
