@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
 )
 
 
@@ -64,7 +65,6 @@ func filterScrubs(comp string, b []string, index int) []string {
 			tmpSlice = append(tmpSlice, binary)
 		}
 	}
-
 	return filterScrubs(comp, tmpSlice, index+1)
 }
 
