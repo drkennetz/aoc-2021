@@ -1,8 +1,12 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"os"
 	"strconv"
+	"strings"
 )
 
 // ToInt will case a given arg into an int type.
@@ -76,4 +80,22 @@ func ASCIIIntToChar(code int) string {
 }
 
 // FileReader
-func FileReader(s string) []string {}
+func FileReader(s string) []string {
+	parsed := make([]string, 0)
+
+	file, err := os.Open(s)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		parsed = append(parsed, line)
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatalln(err)
+	}
+	return parsed
+}

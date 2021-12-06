@@ -1,19 +1,21 @@
 package main
 
 import (
-_ "embed"
-"fmt"
-"strings"
+	_ "embed"
+	"fmt"
+	"github.com/drkennetz/aoc-2021/utils"
+	"log"
+	"strings"
 )
 
-//go:embed ../../inputs/day04/day04.txt
+//go:embed test.txt
 var input string
 
 func init() {
 	// do this in init (not main) so test file has same input
 	input = strings.TrimRight(input, "\n")
 	if len(input) == 0 {
-		panic("empty input.txt file")
+		log.Fatalln("empty input file!")
 	}
 }
 
@@ -23,7 +25,6 @@ func main() {
 	fmt.Println("Output:", ans)
 	ans2 := part2(input)
 	fmt.Println("Output:", ans2)
-
 }
 
 func part1(input string) int {
@@ -135,10 +136,10 @@ func (b *BoardState) Score() int {
 }
 
 func parseInput(input string) (nums []int, boards []BoardState) {
-	lines := strings.Split(input, "\n\n")
+	lines := strings.Split(input, "\r\n")
 
 	for _, v := range strings.Split(lines[0], ",") {
-		nums = append(nums, cast.ToInt(v))
+		nums = append(nums, utils.ToInt(v))
 	}
 
 	for _, grid := range lines[1:] {
@@ -152,7 +153,7 @@ func parseInput(input string) (nums []int, boards []BoardState) {
 
 			row := []int{}
 			for _, p := range parts {
-				row = append(row, aoc.ToInt(p))
+				row = append(row, utils.ToInt(p))
 			}
 			b = append(b, row)
 		}
