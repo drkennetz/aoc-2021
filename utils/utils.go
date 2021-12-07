@@ -27,6 +27,14 @@ func ToInt(arg interface{}) int {
 	return val
 }
 
+// Max finds the max between 2 numbers
+func Max(a, b int) int {
+	if a >= b {
+		return a
+	}
+	return b
+}
+
 // ToString will case a given arg into an int type.
 // Supported types are:
 //    - int
