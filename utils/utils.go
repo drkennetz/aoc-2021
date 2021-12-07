@@ -35,6 +35,14 @@ func Max(a, b int) int {
 	return b
 }
 
+// Abs finds the absolute value between 2 numbers
+func Abs(a, b int) int {
+	if a - b < 0 {
+		return (a-b)*-1
+	} else {
+		return a - b
+	}
+}
 // ToString will case a given arg into an int type.
 // Supported types are:
 //    - int
