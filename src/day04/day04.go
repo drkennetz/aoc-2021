@@ -8,12 +8,12 @@ import (
 	"strings"
 )
 
-//go:embed test.txt
+//go:embed ..\..\inputs\day04\day04.txt
 var input string
 
 func init() {
 	// do this in init (not main) so test file has same input
-	input = strings.TrimRight(input, "\n")
+	input = strings.TrimSpace(input)
 	if len(input) == 0 {
 		log.Fatalln("empty input file!")
 	}
@@ -21,8 +21,8 @@ func init() {
 
 func main() {
 
-	ans := part1(input)
-	fmt.Println("Output:", ans)
+	//ans := part1(input)
+	//fmt.Println("Output:", ans)
 	ans2 := part2(input)
 	fmt.Println("Output:", ans2)
 }
@@ -45,7 +45,6 @@ func part1(input string) int {
 
 func part2(input string) int {
 	nums, boards := parseInput(input)
-
 	lastWinningScore := -1
 	alreadyWon := map[int]bool{}
 	for _, n := range nums {
@@ -144,8 +143,16 @@ func parseInput(input string) (nums []int, boards []BoardState) {
 
 	for _, grid := range lines[1:] {
 		b := [][]int{}
-		for _, line := range strings.Split(grid, "\n") {
+		if grid == "" {
+			continue
+		}
+		grid = strings.ReplaceAll(grid, "  ", " ")
+		grid = strings.TrimLeft(grid, " ")
+
+		for _, line := range strings.Split(grid, " ") {
+			line = strings.TrimLeft(line, " ")
 			line = strings.ReplaceAll(line, "  ", " ")
+
 			for line[0] == ' ' {
 				line = line[1:]
 			}
