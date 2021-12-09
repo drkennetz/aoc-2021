@@ -21,6 +21,10 @@ func ToInt(arg interface{}) int {
 		if err != nil {
 			panic("error converting string to int " + err.Error())
 		}
+	case uint8:
+		val = int(arg.(uint8))
+	case uint:
+		val = int(arg.(uint))
 	default:
 		panic(fmt.Sprintf("unhandled type for int casting %T", arg))
 	}
