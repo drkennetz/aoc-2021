@@ -21,25 +21,22 @@ func init() {
 
 func main() {
 
-	//ans := part1(input)
-	//fmt.Println("Output:", ans)
-	ans2 := part2(input)
-	fmt.Println("Output:", ans2)
+	ans := part1(input)
+	fmt.Println("Output:", ans)
+	//ans2 := part2(input)
+	//fmt.Println("Output:", ans2)
 }
 
 func part1(input string) int {
 	nums, boards := parseInput(input)
-
-	for _, n := range nums {
-		for _, b := range boards {
-			didWin := b.PickNum(n)
+	for n := 0; n < len(nums); n++ {
+		for b := 0; b < len(boards); b++ {
+			didWin := boards[b].PickNum(nums[n])
 			if didWin {
-				// multiply score of winning board by number that was just called
-				return b.Score() * n
+				return boards[b].Score() * nums[n]
 			}
 		}
 	}
-
 	panic("a board should've won and returned from the loop")
 }
 
@@ -47,37 +44,34 @@ func part2(input string) int {
 	nums, boards := parseInput(input)
 	lastWinningScore := -1
 	alreadyWon := map[int]bool{}
-	for _, n := range nums {
-		for bi, b := range boards {
-			if alreadyWon[bi] {
+	for n := 0; n < len(nums); n++ {
+		for b := 0; b < len(boards); b++ {
+			if alreadyWon[b] {
 				continue
 			}
-			didWin := b.PickNum(n)
+			didWin := boards[b].PickNum(nums[n])
 			if didWin {
-				// WHICH BOARD WINS LAST
-				lastWinningScore = b.Score() * n
-
-				// mark board as already won
-				alreadyWon[bi] = true
+				lastWinningScore = boards[b].Score() * nums[n]
+				alreadyWon[b] = true
 			}
 		}
+
 	}
-
 	return lastWinningScore
-
 }
 
 // BoardState maintains a parsed board and a boolean matrix of cells that have
 // been picked/marked
 type BoardState struct {
-	board  [][]int
-	picked [][]bool
+	board  [5][5]int
+	picked [5][5]bool
 }
 
-func NewBoardState(board [][]int) BoardState {
-	picked := make([][]bool, len(board))
+// NewBoardState Creates empty [][]boolean of picked for corresponding board values
+func NewBoardState(board [5][5]int) BoardState {
+	picked := [5][5]bool{}
 	for i := range picked {
-		picked[i] = make([]bool, len(board[0]))
+		picked[i] = [5]bool{}
 	}
 	return BoardState{
 		board:  board,
@@ -86,19 +80,15 @@ func NewBoardState(board [][]int) BoardState {
 }
 
 func (b *BoardState) PickNum(num int) bool {
-	for r, rows := range b.board {
-		for c, v := range rows {
-			if v == num {
+	for r:=0; r < len(b.board); r++ {
+		for c:=0; c < len(b.board); c++ {
+			if b.board[r][c] == num {
 				b.picked[r][c] = true
 			}
 		}
 	}
-
-	// is this fast enough to do on every "cycle"?
-	// guess so. probably a constant time way to do this but oh well
 	for i := 0; i < len(b.board); i++ {
 		isFullRow, isFullCol := true, true
-		// board is square so this works fine, otherwise would need another pair of nested loops
 		for j := 0; j < len(b.board); j++ {
 			// check row at index i
 			if !b.picked[i][j] {
@@ -140,32 +130,33 @@ func parseInput(input string) (nums []int, boards []BoardState) {
 	for _, v := range strings.Split(lines[0], ",") {
 		nums = append(nums, utils.ToInt(v))
 	}
-
-	for _, grid := range lines[1:] {
-		b := [][]int{}
+	tmpidx := 0
+	b := [5][5]int{}
+	for index, grid := range lines[1:] {
 		if grid == "" {
+			tmpidx = 0
+			if index != 0{
+				boards = append(boards, NewBoardState(b))
+			}
 			continue
 		}
 		grid = strings.ReplaceAll(grid, "  ", " ")
 		grid = strings.TrimLeft(grid, " ")
-
-		for _, line := range strings.Split(grid, " ") {
+		row := [5]int{}
+		for idx, line := range strings.Split(grid, " ") {
 			line = strings.TrimLeft(line, " ")
 			line = strings.ReplaceAll(line, "  ", " ")
-
 			for line[0] == ' ' {
 				line = line[1:]
 			}
-			parts := strings.Split(line, " ")
-
-			row := []int{}
-			for _, p := range parts {
-				row = append(row, utils.ToInt(p))
-			}
-			b = append(b, row)
+			parts := strings.Split(line, " ")[0]
+			newparts := utils.ToInt(parts)
+			row[idx] = newparts
 		}
 
-		boards = append(boards, NewBoardState(b))
+		b[tmpidx] = row
+		tmpidx++
 	}
+	boards = append(boards, NewBoardState(b))
 	return nums, boards
 }
