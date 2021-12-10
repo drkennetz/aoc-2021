@@ -94,6 +94,14 @@ func ToASCIICode(arg interface{}) int {
 	return asciiVal
 }
 
+// PopString pops the list char from a []string
+func PopString(s *[]string) string {
+	i := len(*s)
+	pop := (*s)[i-1]
+	*s=(*s)[:i-1]
+	return pop
+}
+
 // ASCIIIntToChar returns a one character string of the given int
 func ASCIIIntToChar(code int) string {
 	return string(rune(code))
